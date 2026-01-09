@@ -9,6 +9,9 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * Entity representing a product category.
+ */
 @Entity
 @Data
 @ToString
@@ -16,14 +19,23 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Category {
+    /**
+     * Primary key identifier for the category.
+     */
     @NotNull
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Display name for the category.
+     */
     @NotNull
     private String name;
 
+    /**
+     * Products that belong to this category.
+     */
     @OneToMany(mappedBy = "category")
     @ToString.Exclude
     private List<Product> products;
