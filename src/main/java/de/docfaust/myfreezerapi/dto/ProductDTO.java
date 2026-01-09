@@ -39,7 +39,7 @@ public class ProductDTO {
      * @param product product entity to convert
      * @return DTO populated from the entity
      */
-    public static ProductDTO fromEntity(Product product) {
+    public static ProductDTO fromEntity(final Product product) {
         return ProductDTO.builder()
                 .id(product.getId())
                 .name(product.getName())

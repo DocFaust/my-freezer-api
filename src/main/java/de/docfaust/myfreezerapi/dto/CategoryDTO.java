@@ -30,7 +30,7 @@ public class CategoryDTO {
      * @param category category entity to convert
      * @return DTO populated from the entity
      */
-    public static CategoryDTO fromEntity(Category category) {
+    public static CategoryDTO fromEntity(final Category category) {
         return CategoryDTO.builder()
                 .id(category.getId())
                 .name(category.getName())
