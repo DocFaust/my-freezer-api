@@ -9,13 +9,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * REST controller for category resources.
+ */
 @RestController
 @RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
 public class CategoryControllerV1 {
 
+    /**
+     * Service used for category operations.
+     */
     private final CategoryService categoryService;
 
+    /**
+     * Returns all categories as DTOs.
+     *
+     * @return list of category DTOs
+     */
     @GetMapping("/")
     public List<CategoryDTO> getAllCategories() {
         return categoryService.getAllCategories();

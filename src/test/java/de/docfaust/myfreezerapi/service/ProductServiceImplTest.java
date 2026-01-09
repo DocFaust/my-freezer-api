@@ -15,15 +15,27 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit tests for {@link ProductServiceImpl}.
+ */
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
 
+    /**
+     * Mock repository used by the service under test.
+     */
     @Mock
     private ProductRepository productRepository;
 
+    /**
+     * Service under test with injected mocks.
+     */
     @InjectMocks
     private ProductServiceImpl productService;
 
+    /**
+     * Verifies that entities are mapped to DTOs when fetching products.
+     */
     @Test
     void getAllProducts_mapsEntitiesToDtos() {
         Category category = Category.builder()

@@ -8,12 +8,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Default {@link ProductService} implementation backed by a repository.
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
+    /**
+     * Repository used to load product data.
+     */
     private final ProductRepository productRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ProductDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
