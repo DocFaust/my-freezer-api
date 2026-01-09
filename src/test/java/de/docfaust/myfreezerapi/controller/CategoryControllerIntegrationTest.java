@@ -1,7 +1,8 @@
-package de.docfaust.myfreezerapi.integration;
+package de.docfaust.myfreezerapi.controller;
 
 import de.docfaust.myfreezerapi.data.entity.Category;
 import de.docfaust.myfreezerapi.data.repository.CategoryRepository;
+import de.docfaust.myfreezerapi.data.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,16 @@ class CategoryControllerIntegrationTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+
     private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        productRepository.deleteAll();
         categoryRepository.deleteAll();
     }
 

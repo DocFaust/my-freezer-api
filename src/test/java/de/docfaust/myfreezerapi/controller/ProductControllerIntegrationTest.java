@@ -1,4 +1,4 @@
-package de.docfaust.myfreezerapi.integration;
+package de.docfaust.myfreezerapi.controller;
 
 import de.docfaust.myfreezerapi.data.entity.Category;
 import de.docfaust.myfreezerapi.data.entity.Product;
