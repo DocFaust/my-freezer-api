@@ -1,9 +1,7 @@
 package de.docfaust.myfreezerapi.controller;
 
-import de.docfaust.myfreezerapi.data.repository.ProductRepository;
 import de.docfaust.myfreezerapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
