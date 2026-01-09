@@ -31,6 +31,7 @@
         <sonar.organization>docfaust</sonar.organization>
         <sonar.projectKey>docfaust_my-freezer-api</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.projectVersion>${project.version}</sonar.projectVersion>
         <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.java.checkstyle.reportPaths>${project.build.directory}/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>    </properties>
     <dependencies>
