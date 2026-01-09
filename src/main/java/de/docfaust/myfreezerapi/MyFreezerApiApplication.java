@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Entry point for the MyFreezer API Spring Boot application.
  */
+@SuppressWarnings("java:S1118")
 @SpringBootApplication
 @Slf4j
 public class MyFreezerApiApplication {
