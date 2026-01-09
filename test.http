@@ -1,0 +1,59 @@
+### Create a category
+POST http://localhost:8080/api/v1/categories
+Content-Type: application/json
+
+{
+  "name": "Desserts"
+}
+> {%
+  client.global.set("categoryId", response.body.id);
+%}
+
+### Get all categories
+GET http://localhost:8080/api/v1/categories/
+
+### Get category by id
+GET http://localhost:8080/api/v1/categories/{{categoryId}}
+
+### Update category
+PUT http://localhost:8080/api/v1/categories/{{categoryId}}
+Content-Type: application/json
+
+{
+  "name": "Frozen Desserts"
+}
+
+### Create a product
+POST http://localhost:8080/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Ice cream",
+  "description": "Vanilla",
+  "categoryId": {{categoryId}}
+}
+> {%
+  client.global.set("productId", response.body.id);
+%}
+
+### Get all products
+GET http://localhost:8080/api/v1/products/
+
+### Get product by id
+GET http://localhost:8080/api/v1/products/{{productId}}
+
+### Update product
+PUT http://localhost:8080/api/v1/products/{{productId}}
+Content-Type: application/json
+
+{
+  "name": "Ice cream",
+  "description": "Chocolate",
+  "categoryId": {{categoryId}}
+}
+
+### Delete product
+DELETE http://localhost:8080/api/v1/products/{{productId}}
+
+### Delete category
+DELETE http://localhost:8080/api/v1/categories/{{categoryId}}
