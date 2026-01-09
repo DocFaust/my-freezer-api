@@ -17,7 +17,7 @@ public class ProductControllerV1 {
     /**
      * Service used for product operations.
      */
-    public final ProductService productService;
+    private final ProductService productService;
 
     /**
      * Returns all products as a stringified list of DTOs.
