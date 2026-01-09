@@ -1,5 +1,6 @@
 package de.docfaust.myfreezerapi.dto;
 
+import de.docfaust.myfreezerapi.data.entity.Category;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -13,4 +14,11 @@ public class CategoryDTO {
     private Long id;
     @NotNull
     private String name;
+
+    public static CategoryDTO fromEntity(Category category) {
+        return CategoryDTO.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build();
+    }
 }
