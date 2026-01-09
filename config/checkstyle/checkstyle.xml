@@ -147,7 +147,7 @@
             <!-- Explicit token list to avoid duplication with WhitespaceAround.
              All other default tokens are covered by WhitespaceAround. -->
             <property name="tokens"
-                      value="COMMA, SEMI, TYPECAST, LITERAL_YIELD, ELLIPSIS, LITERAL_CASE"/>
+                      value="COMMA, SEMI, TYPECAST, LITERAL_YIELD, LITERAL_CASE"/>
         </module>
         <module name="WhitespaceAround"/>
 
