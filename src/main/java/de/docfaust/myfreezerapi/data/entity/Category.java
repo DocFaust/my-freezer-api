@@ -22,7 +22,6 @@ public class Category {
     /**
      * Primary key identifier for the category.
      */
-    @NotNull
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;

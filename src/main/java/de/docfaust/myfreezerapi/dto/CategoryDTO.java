@@ -16,7 +16,6 @@ public class CategoryDTO {
     /**
      * Identifier for the category.
      */
-    @NotNull
     private Long id;
     /**
      * Display name for the category.

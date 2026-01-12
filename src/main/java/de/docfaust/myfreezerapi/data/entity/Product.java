@@ -17,7 +17,6 @@ public class Product {
     /**
      * Primary key identifier for the product.
      */
-    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
