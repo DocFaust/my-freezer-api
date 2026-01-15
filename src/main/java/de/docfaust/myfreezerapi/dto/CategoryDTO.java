@@ -16,7 +16,6 @@ public class CategoryDTO {
     /**
      * Identifier for the category.
      */
-    @NotNull
     private Long id;
     /**
      * Display name for the category.
@@ -29,8 +28,12 @@ public class CategoryDTO {
      *
      * @param category category entity to convert
      * @return DTO populated from the entity
+     * @throws IllegalArgumentException if category is null or required fields are missing
      */
     public static CategoryDTO fromEntity(final Category category) {
+        if (category == null) {
+            throw new IllegalArgumentException("Category cannot be null");
+        }
         return CategoryDTO.builder()
                 .id(category.getId())
                 .name(category.getName())

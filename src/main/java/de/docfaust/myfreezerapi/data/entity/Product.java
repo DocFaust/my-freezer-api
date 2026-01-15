@@ -17,7 +17,6 @@ public class Product {
     /**
      * Primary key identifier for the product.
      */
-    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,4 +38,11 @@ public class Product {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
+
+    /**
+     * Version field for optimistic locking.
+     * Automatically incremented on each update to detect concurrent modifications.
+     */
+    @Version
+    private Long version;
 }
