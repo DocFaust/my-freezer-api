@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -95,6 +96,7 @@ class CategoryServiceImplTest {
         Category category = Category.builder()
                 .id(4L)
                 .name("Old")
+                .version(1L)
                 .build();
         CategoryRequest request = CategoryRequest.builder()
                 .name("New")
@@ -108,17 +110,44 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    void updateCategory_throwsConflictOnOptimisticLockingFailure() {
+        Category category = Category.builder()
+                .id(4L)
+                .name("Old")
+                .version(1L)
+                .build();
+        CategoryRequest request = CategoryRequest.builder()
+                .name("New")
+                .build();
+        when(categoryRepository.findById(4L)).thenReturn(Optional.of(category));
+        when(categoryRepository.save(category))
+                .thenThrow(new ObjectOptimisticLockingFailureException(Category.class, 4L));
+
+        assertThatThrownBy(() -> categoryService.updateCategory(4L, request))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.CONFLICT);
+                    assertThat(rse.getReason()).contains("modified by another user");
+                });
+    }
+
+    @Test
     void deleteCategory_throwsWhenMissing() {
-        when(categoryRepository.existsById(99L)).thenReturn(false);
+        org.springframework.dao.EmptyResultDataAccessException exception =
+                new org.springframework.dao.EmptyResultDataAccessException(1);
+        org.mockito.Mockito.doThrow(exception).when(categoryRepository).deleteById(99L);
 
         assertThatThrownBy(() -> categoryService.deleteCategory(99L))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.NOT_FOUND);
+                });
     }
 
     @Test
     void deleteCategory_deletesWhenPresent() {
-        when(categoryRepository.existsById(12L)).thenReturn(true);
-
         categoryService.deleteCategory(12L);
 
         verify(categoryRepository).deleteById(12L);

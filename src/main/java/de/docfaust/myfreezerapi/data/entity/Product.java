@@ -38,4 +38,11 @@ public class Product {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
+
+    /**
+     * Version field for optimistic locking.
+     * Automatically incremented on each update to detect concurrent modifications.
+     */
+    @Version
+    private Long version;
 }

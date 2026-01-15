@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -126,12 +127,14 @@ class ProductServiceImplTest {
         Category category = Category.builder()
                 .id(5L)
                 .name("Snacks")
+                .version(1L)
                 .build();
         Product product = Product.builder()
                 .id(6L)
                 .name("Old")
                 .description("Old")
                 .category(category)
+                .version(1L)
                 .build();
         ProductRequest request = ProductRequest.builder()
                 .name("New")
@@ -149,17 +152,54 @@ class ProductServiceImplTest {
     }
 
     @Test
+    void updateProduct_throwsConflictOnOptimisticLockingFailure() {
+        Category category = Category.builder()
+                .id(5L)
+                .name("Snacks")
+                .version(1L)
+                .build();
+        Product product = Product.builder()
+                .id(6L)
+                .name("Old")
+                .description("Old")
+                .category(category)
+                .version(1L)
+                .build();
+        ProductRequest request = ProductRequest.builder()
+                .name("New")
+                .description("New desc")
+                .categoryId(5L)
+                .build();
+        when(productRepository.findById(6L)).thenReturn(Optional.of(product));
+        when(categoryRepository.findById(5L)).thenReturn(Optional.of(category));
+        when(productRepository.save(product))
+                .thenThrow(new ObjectOptimisticLockingFailureException(Product.class, 6L));
+
+        assertThatThrownBy(() -> productService.updateProduct(6L, request))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.CONFLICT);
+                    assertThat(rse.getReason()).contains("modified by another user");
+                });
+    }
+
+    @Test
     void deleteProduct_throwsWhenMissing() {
-        when(productRepository.existsById(99L)).thenReturn(false);
+        org.springframework.dao.EmptyResultDataAccessException exception =
+                new org.springframework.dao.EmptyResultDataAccessException(1);
+        org.mockito.Mockito.doThrow(exception).when(productRepository).deleteById(99L);
 
         assertThatThrownBy(() -> productService.deleteProduct(99L))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.NOT_FOUND);
+                });
     }
 
     @Test
     void deleteProduct_deletesWhenPresent() {
-        when(productRepository.existsById(12L)).thenReturn(true);
-
         productService.deleteProduct(12L);
 
         verify(productRepository).deleteById(12L);
