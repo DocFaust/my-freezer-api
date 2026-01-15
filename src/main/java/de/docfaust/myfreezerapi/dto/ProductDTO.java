@@ -16,7 +16,6 @@ public class ProductDTO {
     /**
      * Identifier for the product.
      */
-    @NotNull
     private Long id;
     /**
      * Display name for the product.

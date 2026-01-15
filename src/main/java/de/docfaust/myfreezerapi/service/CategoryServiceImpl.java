@@ -7,7 +7,9 @@ import de.docfaust.myfreezerapi.dto.CategoryRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
 
     /**
@@ -53,6 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public CategoryDTO createCategory(final CategoryRequest request) {
         log.info("Creating category {}", request.getName());
         Category category = Category.builder()
@@ -66,28 +70,41 @@ public class CategoryServiceImpl implements CategoryService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public CategoryDTO updateCategory(final Long id, final CategoryRequest request) {
         log.info("Updating category {}", id);
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.warn("Category {} not found for update", id);
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
-                });
-        category.setName(request.getName());
-        Category saved = categoryRepository.save(category);
-        return CategoryDTO.fromEntity(saved);
+        try {
+            Category category = categoryRepository.findById(id)
+                    .orElseThrow(() -> {
+                        log.warn("Category {} not found for update", id);
+                        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
+                    });
+            category.setName(request.getName());
+            Category saved = categoryRepository.save(category);
+            return CategoryDTO.fromEntity(saved);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            log.warn("Optimistic locking failure when updating category {}", id);
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Category was modified by another user. Please refresh and try again."
+            );
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void deleteCategory(final Long id) {
         log.info("Deleting category {}", id);
-        if (!categoryRepository.existsById(id)) {
+        // Use deleteById directly - it's atomic and will throw exception if not found
+        // This eliminates the race condition between existsById and deleteById
+        try {
+            categoryRepository.deleteById(id);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
             log.warn("Category {} not found for deletion", id);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
         }
-        categoryRepository.deleteById(id);
     }
 }

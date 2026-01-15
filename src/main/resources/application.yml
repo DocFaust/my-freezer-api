@@ -2,3 +2,16 @@ logging:
   level:
     root: WARN
     de.docfaust.myfreezerapi: INFO
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    username: myuser
+    password: secret
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
