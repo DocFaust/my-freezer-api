@@ -164,4 +164,44 @@ class ProductServiceImplTest {
 
         verify(productRepository).deleteById(12L);
     }
+
+    @Test
+    void getAllProducts_mapsEntityWithNullCategory() {
+        Product product = Product.builder()
+                .id(7L)
+                .name("Uncategorized product")
+                .description("No category")
+                .category(null)
+                .build();
+        when(productRepository.findAll()).thenReturn(List.of(product));
+
+        List<ProductDTO> result = productService.getAllProducts();
+
+        assertThat(result)
+                .hasSize(1)
+                .first()
+                .satisfies(dto -> {
+                    assertThat(dto.getId()).isEqualTo(7L);
+                    assertThat(dto.getName()).isEqualTo("Uncategorized product");
+                    assertThat(dto.getDescription()).isEqualTo("No category");
+                    assertThat(dto.getCategoryName()).isNull();
+                });
+    }
+
+    @Test
+    void getProductById_returnsDtoWithNullCategory() {
+        Product product = Product.builder()
+                .id(9L)
+                .name("Product without category")
+                .description("Test")
+                .category(null)
+                .build();
+        when(productRepository.findById(9L)).thenReturn(Optional.of(product));
+
+        ProductDTO result = productService.getProductById(9L);
+
+        assertThat(result.getId()).isEqualTo(9L);
+        assertThat(result.getName()).isEqualTo("Product without category");
+        assertThat(result.getCategoryName()).isNull();
+    }
 }
