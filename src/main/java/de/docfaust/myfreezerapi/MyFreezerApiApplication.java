@@ -10,7 +10,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SuppressWarnings("java:S1118")
 @SpringBootApplication
 @Slf4j
-public class MyFreezerApiApplication {
+public final class MyFreezerApiApplication {
+
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private MyFreezerApiApplication() {
+        // Utility class constructor
+    }
 
     /**
      * Starts the Spring Boot application.
