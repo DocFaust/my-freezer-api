@@ -4,6 +4,8 @@ import de.docfaust.myfreezerapi.data.entity.Product;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
  * DTO representing product data returned by the API.
  */
@@ -31,6 +33,14 @@ public class ProductDTO {
      * May be null if the product has no category assigned.
      */
     private String categoryName;
+    /**
+     * Timestamp when the product was created.
+     */
+    private LocalDateTime createdAt;
+    /**
+     * Timestamp when the product was last modified.
+     */
+    private LocalDateTime updatedAt;
 
     /**
      * Builds a {@link ProductDTO} from a {@link Product} entity.
@@ -48,6 +58,8 @@ public class ProductDTO {
                 .name(product.getName())
                 .description(product.getDescription())
                 .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
                 .build();
     }
 }

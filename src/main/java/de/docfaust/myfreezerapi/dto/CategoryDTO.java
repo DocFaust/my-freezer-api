@@ -4,6 +4,8 @@ import de.docfaust.myfreezerapi.data.entity.Category;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
  * DTO representing category data returned by the API.
  */
@@ -22,6 +24,14 @@ public class CategoryDTO {
      */
     @NotNull
     private String name;
+    /**
+     * Timestamp when the category was created.
+     */
+    private LocalDateTime createdAt;
+    /**
+     * Timestamp when the category was last modified.
+     */
+    private LocalDateTime updatedAt;
 
     /**
      * Builds a {@link CategoryDTO} from a {@link Category} entity.
@@ -37,6 +47,8 @@ public class CategoryDTO {
         return CategoryDTO.builder()
                 .id(category.getId())
                 .name(category.getName())
+                .createdAt(category.getCreatedAt())
+                .updatedAt(category.getUpdatedAt())
                 .build();
     }
 }
