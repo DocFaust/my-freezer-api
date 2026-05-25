@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -92,6 +93,19 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    void getCategoryById_throwsWhenMissing() {
+        when(categoryRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> categoryService.getCategoryById(99L))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                    assertThat(rse.getReason()).isEqualTo("Category not found");
+                });
+    }
+
+    @Test
     void updateCategory_updatesEntity() {
         Category category = Category.builder()
                 .id(4L)
@@ -107,6 +121,22 @@ class CategoryServiceImplTest {
         CategoryDTO result = categoryService.updateCategory(4L, request);
 
         assertThat(result.getName()).isEqualTo("New");
+    }
+
+    @Test
+    void updateCategory_throwsWhenMissing() {
+        CategoryRequest request = CategoryRequest.builder()
+                .name("New")
+                .build();
+        when(categoryRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> categoryService.updateCategory(99L, request))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                    assertThat(rse.getReason()).isEqualTo("Category not found");
+                });
     }
 
     @Test
