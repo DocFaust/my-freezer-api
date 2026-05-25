@@ -38,7 +38,7 @@ public class ProductControllerV1 {
      *
      * @return list of product DTOs
      */
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         log.debug("Handling get all products request");
         return ResponseEntity.ok(productService.getAllProducts());

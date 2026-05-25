@@ -2,6 +2,8 @@ logging:
   level:
     root: WARN
     de.docfaust.myfreezerapi: INFO
+    org.flywaydb: INFO
+    org.springframework.boot.flyway: INFO
 
 spring:
   datasource:

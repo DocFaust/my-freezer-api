@@ -38,7 +38,7 @@ public class CategoryControllerV1 {
      *
      * @return list of category DTOs
      */
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         log.debug("Handling get all categories request");
         return ResponseEntity.ok(categoryService.getAllCategories());

@@ -1,0 +1,43 @@
+# Variablen (funktionieren auch ohne Umgebungsauswahl)
+@baseUrl = http://localhost:8080
+@categoryId = 1
+@productId = 1
+
+### Alle Produkte abrufen (Trailing-Slash erforderlich!)
+GET {{baseUrl}}/api/v1/products/
+
+###
+
+### Produkt nach ID abrufen
+GET {{baseUrl}}/api/v1/products/{{productId}}
+
+###
+
+### Produkt anlegen (categoryId muss existieren)
+POST {{baseUrl}}/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Ice cream",
+  "description": "Vanilla",
+  "categoryId": {{categoryId}}
+}
+
+###
+
+### Produkt aktualisieren
+PUT {{baseUrl}}/api/v1/products/{{productId}}
+Content-Type: application/json
+
+{
+  "name": "Ice cream",
+  "description": "Chocolate",
+  "categoryId": {{categoryId}}
+}
+
+###
+
+### Produkt löschen
+DELETE {{baseUrl}}/api/v1/products/{{productId}}
+
+###
