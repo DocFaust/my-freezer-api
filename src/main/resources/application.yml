@@ -2,12 +2,45 @@ logging:
   level:
     root: WARN
     de.docfaust.myfreezerapi: INFO
+    org.flywaydb: INFO
+    org.springframework.boot.flyway: INFO
 
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    username: myuser
+    password: secret
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+management:
+  server:
+    port: 8081        # separater Port für Actuator (optional, aber sehr empfohlen)
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+
+  health:
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
 
 springdoc:
   api-docs:

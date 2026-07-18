@@ -5,6 +5,7 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   build:
     name: Build and analyze
@@ -13,24 +14,75 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Set up JDK 21
+
+      - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
-          java-version: 21
-          distribution: 'zulu' # Alternative distribution options are available.
+          java-version: "25"
+          distribution: zulu
+
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          restore-keys: |
+            ${{ runner.os }}-sonar
+
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          restore-keys: |
+            ${{ runner.os }}-m2
+
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=DocFaust_my-freezer-api
+
+      # --- Discord notifications (robust) ---
+      - name: Notify Discord (success)
+        if: success()
+        uses: discord-actions/message@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: |
+            {
+              "embeds": [
+                {
+                  "title": "✅ Build Successful",
+                  "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                  "color": 5763719,
+                  "fields": [
+                    { "name": "Repository", "value": "${{ github.repository }}", "inline": true },
+                    { "name": "Branch", "value": "${{ github.ref_name }}", "inline": true },
+                    { "name": "Triggered by", "value": "${{ github.actor }}", "inline": true },
+                    { "name": "Commit", "value": "[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" }
+                  ]
+                }
+              ]
+            }
+
+      - name: Notify Discord (failure)
+        if: failure()
+        uses: discord-actions/message@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: |
+            {
+              "embeds": [
+                {
+                  "title": "❌ Build Failed",
+                  "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                  "color": 15548997,
+                  "fields": [
+                    { "name": "Repository", "value": "${{ github.repository }}", "inline": true },
+                    { "name": "Branch", "value": "${{ github.ref_name }}", "inline": true },
+                    { "name": "Triggered by", "value": "${{ github.actor }}", "inline": true },
+                    { "name": "Commit", "value": "[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" }
+                  ]
+                }
+              ]
+            }

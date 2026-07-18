@@ -3,6 +3,11 @@ package de.docfaust.myfreezerapi.data.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 /**
  * Entity representing a product stored in the freezer.
@@ -13,6 +18,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
     /**
      * Primary key identifier for the product.
@@ -39,4 +45,27 @@ public class Product {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
+
+    /**
+     * Version field for optimistic locking.
+     * Automatically incremented on each update to detect concurrent modifications.
+     */
+    @Version
+    private Long version;
+
+    /**
+     * Timestamp when the product was created.
+     * Automatically set by JPA Auditing on entity creation.
+     */
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    /**
+     * Timestamp when the product was last modified.
+     * Automatically updated by JPA Auditing on entity modification.
+     */
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }

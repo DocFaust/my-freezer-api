@@ -1,0 +1,21 @@
+@actuatorUrl = http://localhost:8081
+
+### Health
+GET {{actuatorUrl}}/actuator/health
+
+###
+
+### Info
+GET {{actuatorUrl}}/actuator/info
+
+###
+
+### Metrics (Übersicht)
+GET {{actuatorUrl}}/actuator/metrics
+
+###
+
+### Prometheus
+GET {{actuatorUrl}}/actuator/prometheus
+
+###

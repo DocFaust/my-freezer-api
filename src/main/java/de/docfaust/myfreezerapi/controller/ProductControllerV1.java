@@ -46,7 +46,7 @@ public class ProductControllerV1 {
      *
      * @return list of product DTOs
      */
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     @Operation(summary = "List all products")
     @ApiResponse(responseCode = "200", description = "Products returned successfully")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {

@@ -46,7 +46,7 @@ public class CategoryControllerV1 {
      *
      * @return list of category DTOs
      */
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     @Operation(summary = "List all categories")
     @ApiResponse(responseCode = "200", description = "Categories returned successfully")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
