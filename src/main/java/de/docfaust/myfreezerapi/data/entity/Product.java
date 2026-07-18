@@ -16,8 +16,8 @@ import lombok.*;
 public class Product {
     /**
      * Primary key identifier for the product.
+     * Null before persist; assigned by the database identity generator.
      */
-    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

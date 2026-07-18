@@ -2,3 +2,17 @@ logging:
   level:
     root: WARN
     de.docfaust.myfreezerapi: INFO
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
