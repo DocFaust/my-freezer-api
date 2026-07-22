@@ -36,4 +36,4 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonar --no-daemon
+        run: ./gradlew build sonar --no-daemon -Dsonar.token=$SONAR_TOKEN

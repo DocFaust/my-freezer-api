@@ -99,7 +99,7 @@ checkstyle {
 sonar {
     properties {
         property("sonar.organization", "docfaust")
-        property("sonar.projectKey", "docfaust_my-freezer-api")
+        property("sonar.projectKey", "DocFaust_my-freezer-api")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.projectVersion", version)
         property(
