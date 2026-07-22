@@ -1,6 +1,7 @@
 package de.docfaust.myfreezerapi.dto;
 
 import de.docfaust.myfreezerapi.data.entity.Category;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -14,15 +15,18 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Category representation returned by the API")
 public class CategoryDTO {
     /**
      * Identifier for the category.
      */
+    @Schema(description = "Category identifier", example = "1")
     private Long id;
     /**
      * Display name for the category.
      */
     @NotNull
+    @Schema(description = "Display name", example = "Frozen Veggies")
     private String name;
     /**
      * Timestamp when the category was created.

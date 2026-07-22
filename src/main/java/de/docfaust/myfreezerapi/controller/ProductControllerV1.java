@@ -3,6 +3,13 @@ package de.docfaust.myfreezerapi.controller;
 import de.docfaust.myfreezerapi.dto.ProductDTO;
 import de.docfaust.myfreezerapi.dto.ProductRequest;
 import de.docfaust.myfreezerapi.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +33,7 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Products", description = "Operations for freezer products")
 public class ProductControllerV1 {
 
     /**
@@ -39,6 +47,8 @@ public class ProductControllerV1 {
      * @return list of product DTOs
      */
     @GetMapping({"", "/"})
+    @Operation(summary = "List all products")
+    @ApiResponse(responseCode = "200", description = "Products returned successfully")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         log.debug("Handling get all products request");
         return ResponseEntity.ok(productService.getAllProducts());
@@ -51,7 +61,16 @@ public class ProductControllerV1 {
      * @return product DTO
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable final Long id) {
+    @Operation(summary = "Get a product by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product found",
+                    content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
+    public ResponseEntity<ProductDTO> getProductById(
+            @Parameter(description = "Product identifier", required = true)
+            @PathVariable final Long id
+    ) {
         log.debug("Handling get product request {}", id);
         return ResponseEntity.ok(productService.getProductById(id));
     }
@@ -63,6 +82,12 @@ public class ProductControllerV1 {
      * @return created product DTO
      */
     @PostMapping
+    @Operation(summary = "Create a product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Product created",
+                    content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)
+    })
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody final ProductRequest request) {
         log.info("Handling create product request");
         ProductDTO created = productService.createProduct(request);
@@ -77,7 +102,15 @@ public class ProductControllerV1 {
      * @return updated product DTO
      */
     @PutMapping("/{id}")
+    @Operation(summary = "Update a product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product updated",
+                    content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
     public ResponseEntity<ProductDTO> updateProduct(
+            @Parameter(description = "Product identifier", required = true)
             @PathVariable final Long id,
             @Valid @RequestBody final ProductRequest request
     ) {
@@ -92,7 +125,15 @@ public class ProductControllerV1 {
      * @return no content response
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable final Long id) {
+    @Operation(summary = "Delete a product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Product deleted"),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
+    public ResponseEntity<Void> deleteProduct(
+            @Parameter(description = "Product identifier", required = true)
+            @PathVariable final Long id
+    ) {
         log.info("Handling delete product request {}", id);
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

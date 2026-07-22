@@ -23,6 +23,7 @@ import java.util.List;
 public class Category {
     /**
      * Primary key identifier for the category.
+     * Null before persist; assigned by the database identity generator.
      */
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)

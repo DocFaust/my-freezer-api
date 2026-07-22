@@ -3,6 +3,13 @@ package de.docfaust.myfreezerapi.controller;
 import de.docfaust.myfreezerapi.dto.CategoryDTO;
 import de.docfaust.myfreezerapi.dto.CategoryRequest;
 import de.docfaust.myfreezerapi.service.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +33,7 @@ import java.util.List;
 @RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Categories", description = "Operations for freezer categories")
 public class CategoryControllerV1 {
 
     /**
@@ -39,6 +47,8 @@ public class CategoryControllerV1 {
      * @return list of category DTOs
      */
     @GetMapping({"", "/"})
+    @Operation(summary = "List all categories")
+    @ApiResponse(responseCode = "200", description = "Categories returned successfully")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         log.debug("Handling get all categories request");
         return ResponseEntity.ok(categoryService.getAllCategories());
@@ -51,7 +61,16 @@ public class CategoryControllerV1 {
      * @return category DTO
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable final Long id) {
+    @Operation(summary = "Get a category by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Category found",
+                    content = @Content(schema = @Schema(implementation = CategoryDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
+    })
+    public ResponseEntity<CategoryDTO> getCategoryById(
+            @Parameter(description = "Category identifier", required = true)
+            @PathVariable final Long id
+    ) {
         log.debug("Handling get category request {}", id);
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
@@ -63,6 +82,12 @@ public class CategoryControllerV1 {
      * @return created category DTO
      */
     @PostMapping
+    @Operation(summary = "Create a category")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Category created",
+                    content = @Content(schema = @Schema(implementation = CategoryDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)
+    })
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody final CategoryRequest request) {
         log.info("Handling create category request");
         CategoryDTO created = categoryService.createCategory(request);
@@ -77,7 +102,15 @@ public class CategoryControllerV1 {
      * @return updated category DTO
      */
     @PutMapping("/{id}")
+    @Operation(summary = "Update a category")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Category updated",
+                    content = @Content(schema = @Schema(implementation = CategoryDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
+    })
     public ResponseEntity<CategoryDTO> updateCategory(
+            @Parameter(description = "Category identifier", required = true)
             @PathVariable final Long id,
             @Valid @RequestBody final CategoryRequest request
     ) {
@@ -92,7 +125,15 @@ public class CategoryControllerV1 {
      * @return no content response
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable final Long id) {
+    @Operation(summary = "Delete a category")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Category deleted"),
+            @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
+    })
+    public ResponseEntity<Void> deleteCategory(
+            @Parameter(description = "Category identifier", required = true)
+            @PathVariable final Long id
+    ) {
         log.info("Handling delete category request {}", id);
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();

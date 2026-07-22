@@ -1,6 +1,7 @@
 package de.docfaust.myfreezerapi.dto;
 
 import de.docfaust.myfreezerapi.data.entity.Product;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -14,24 +15,29 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Product representation returned by the API")
 public class ProductDTO {
     /**
      * Identifier for the product.
      */
+    @Schema(description = "Product identifier", example = "1")
     private Long id;
     /**
      * Display name for the product.
      */
     @NotNull
+    @Schema(description = "Display name", example = "Peas")
     private String name;
     /**
      * Optional description of the product.
      */
+    @Schema(description = "Optional description", example = "Frozen garden peas")
     private String description;
     /**
      * Optional name of the category the product belongs to.
      * May be null if the product has no category assigned.
      */
+    @Schema(description = "Name of the related category", example = "Frozen Veggies")
     private String categoryName;
     /**
      * Timestamp when the product was created.
